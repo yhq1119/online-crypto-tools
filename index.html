@@ -1,0 +1,319 @@
+<!-- 
+    AES javascript document:
+https://www.npmjs.com/package/aes-js
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES APIs Webpage</title>
+    <script src="js/aes.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/hexencode.js" defer></script>
+    <script src="js/aes.hash.js" defer></script>
+    <script src="js/aes.crypt.decrypt.js" defer></script>
+    <script src="js/sha256.js" defer></script>
+    <script src="js/aws.sign.js" defer></script>
+</head>
+
+<body>
+    <a id="top"></a>
+    <div class="header">
+        <h1>Cloud Security Assignment 2</h1>
+
+        <a href="#aes_hash">AES Hash Example</a><br>
+        <a href="#aes_encrypt">AES Encryption & Decryption Example</a><br>
+        <a href="#aws_sign">Signing AWS Requests with Signature Version 4</a><br>
+        <a href="#aws_key_management">AWS Key Management Service</a><br>
+        <a href="#aws_vpn">AWS Site-to-Site VPN</a><br>
+        <a href="#ssl_handshake">SSL Handshake Protocol</a><br>
+    </div>
+
+    <section>
+        <a id="aes_hash"></a>
+        <h1>AES Hash</h1>
+        <h4>Boht plaintext and key have to be HEX digits!</h4>
+        <h5>Every 2 HEX digits = 1 byte!</h5>
+        <table>
+            <tr>
+                <td>
+                    plaintext:
+                </td>
+                <td>
+                    <input id="plaintext" size="40" placeholder="Please enter string (must be a multiple of 32 bytes)"
+                        value="4e4907483632a75e3b3898371520f75e" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    key:
+                </td>
+                <td>
+                    <input id="key" size="40" placeholder="Please enter 16 bytes key"
+                        value="1234567890abcdef1234567890abcdef" />
+                </td>
+            </tr>
+            <tr>
+                <td>Hashed result:</td>
+                <td>
+                    <input id="hash_value" size="40" disabled="true">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="aes_hash()">AES Hash</button></td>
+                <td></td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- 
+            
+            This section for demo of AES encryption and decryption process 
+        
+    -->
+
+    <section>
+        <a id="aes_encrypt"></a>
+
+        <h1>AES cryptosystem</h1>
+        <table>
+            <h3>AES Encryption</h3>
+            <tr>
+                <td>
+                    plaintext:
+                </td>
+                <td>
+                    <input id="to_encrypt" size="40" placeholder="Please enter string (must be a multiple of 16 bytes)"
+                        value="" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    key:
+                </td>
+                <td>
+                    <input id="en_key" size="40" placeholder="Please enter 16 bytes key"
+                        value="1234567890abcdef1234567890abcdef" />
+                </td>
+            </tr>
+            <tr>
+                <td>Encrypted result :</td>
+                <td>
+                    <input id="aes_encrypt_value" size="40" disabled="true">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="encrypt()">AES Encrypt</button></td>
+                <td> </td>
+            </tr>
+        </table>
+
+        <table>
+            <h3>AES Decryption</h3>
+            <tr>
+                <td>
+                    ciphertext:
+                </td>
+                <td>
+                    <input id="to_decrypt" size="40" placeholder="Please enter string (must be a multiple of 16 bytes)"
+                        value="" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    key:
+                </td>
+                <td>
+                    <input id="de_key" size="40" placeholder="Please enter 16 bytes key"
+                        value="1234567890abcdef1234567890abcdef" />
+                </td>
+            </tr>
+            <tr>
+                <td>Decrypted result :</td>
+                <td>
+                    <input id="aes_decrypt_value" size="40" disabled="true">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="decrypt()">AES Decrypt</button></td>
+                <td></td>
+            </tr>
+        </table>
+        <table>
+            <h3>Text and Heximal form</h3>
+            <tr>
+                <td>
+                    plaintext
+                </td>
+                <td>
+                    <input id="text_to_hex" oninput="text1(event)" onchange="text1(event)" onfocus="text1(event)"
+                        onblur="text1(event)" onfocusout="text1(event)" size="40">
+                </td>
+                <td><input size="10" disabled id="text_length"></td>
+            </tr>
+            <tr>
+                <td>heximal</td>
+                <td>
+                    <input id="hex_to_text" oninput="hex1(event)" onchange="hex1(event)" onfocus="hex1(event)"
+                        onblur="hex1(event)" onfocusout="hex1(event)" size="40">
+                </td>
+                <td><input size="10" disabled id="hex_length"></td>
+            </tr>
+            <tr>
+                <td>Padding 0 to n*16</td>
+                <td><input disabled id="fill_16" size="40"></td>
+                <td><input size="10" disabled id="filled_length"></td>
+            </tr>
+        </table>
+    </section>
+    <!--
+
+        This is section for demo of key signing
+
+     -->
+    <section>
+        <a id="aws_sign"></a>
+        <table>
+            <h1>Signing AWS Requests with Signature Version 4</h1>
+            <h5>HMAC(k, m) = SHA256[ k⊕opad || SHA256[ (k⊕ipad) || m ] ]</h5>
+            <tr>
+                <td>Input k</td>
+                <td>
+                    <textarea id="input_aws_sign_k" oninput="sign_to_hex_k(event)" onchange="sign_to_hex_k(event)"
+                        onfocus="sign_to_hex_k(event)" onblur="sign_to_hex_k(event)" onfocusout="sign_to_hex_k(event)"
+                        rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>k to hex digits</td>
+                <td>
+                    <textarea id="aws_sign_k_hex" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>padding 0 after hex k</td>
+                <td>
+                    <textarea id="aws_sign_k_hex_padding" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>Input m</td>
+                <td>
+                    <textarea id="input_aws_sign_m" oninput="sign_to_hex_m(event)" onchange="sign_to_hex_m(event)"
+                    onfocus="sign_to_hex_m(event)" onblur="sign_to_hex_m(event)" onfocusout="sign_to_hex_m(event)"
+                    rows="10">
+                </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>m to hex digits</td>
+                <td>
+                    <textarea id="aws_sign_m_hex" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    k⊕ipad
+                </td>
+                <td>
+                    <textarea id="aws_sign_k_hex_xor_ipad" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>k⊕ipad || m</td>
+                <td>
+                    <textarea id="aws_sign_k_hex_xor_m" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>SHA256[(k⊕ipad) || m]</td>
+                <td>
+                    <textarea id="aws_sign_k_hex_xor_m_sha256" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>k⊕opad</td>
+                <td>
+                    <textarea id="aws_sign_k_hex_xor_opad" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>k⊕opad || SHA256[ (k⊕ipad) || m ]
+                </td>
+                <td>
+                    <textarea id="aws_sign_kopad_sha256_kipad" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>HMAC(k, m) = SHA256[ k⊕opad || SHA256[ (k⊕ipad) || m ] ] =</td>
+                <td>
+                    <textarea id="hmac" disabled rows="10">
+                    </textarea>
+                </td>
+            </tr>
+
+            <tr><td>
+HMAC Value
+            </td>
+        <td>
+<input onchange="hexEncodeSign
+(event)" onfocus="hexEncodeSign
+(event)" oninput="hexEncodeSign
+(event)" onblur="hexEncodeSign
+(event)" size="60">
+        </td>
+        </tr>
+        <tr>
+            <td>Signature</td>
+            <td><input disabled id="hmac_sign" size="60"></td>
+        </tr>
+        </table>
+
+    </section>
+    <section>
+        <a id="aws_key_management">
+            <h1>AWS Key Management</h1>
+
+        </a>
+    </section>
+    <!-- 
+
+        This is section for demo of AWS VPN key Distribution
+
+     -->
+    <section>
+        <a id="aws_vpn">
+            <h1>AWS VPN Key Distribution</h1>
+
+        </a>
+    </section>
+    <!-- 
+
+        This is section for demo of SSL (Secured Socket Layer) Handshake Protocol
+
+     -->
+    <section>
+        <a id="ssl_handshake">
+            <h1>SSL Handshake Protocol</h1>
+
+        </a>
+    </section>
+
+    <a class="backtop-link" href="#top">Back Top</a>
+</body>
+
+</html>
