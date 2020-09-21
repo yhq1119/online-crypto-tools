@@ -14,8 +14,9 @@ const AWS_SIGN_HEX_K_XOR_APPEND_M = "aws_sign_k_hex_xor_m"
 const AWS_SIGN_HEX_M_SHA256 = "aws_sign_k_hex_xor_m_sha256"
 const AWS_SIGN_KOPAD_SHA256_KIPAD = "aws_sign_kopad_sha256_kipad"
 const AWS_SIGN_HMAC = "hmac"
+const AWS_SIGN_HEX_SIGN = "hmac_sign"
 
-const AWS_SIGN_SIGNATURE = "hmac_sign"
+// const AWS_SIGN_SIGNATURE = "hmac_sign"
 const DIGITS_HOLD = 128
 const IPAD = "36363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636"
 const OPAD = "5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c"
@@ -39,6 +40,7 @@ function sign_to_hex_m(e) {
     getElem(AWS_SIGN_HEX_M_SHA256).value = sha256(getElem(AWS_SIGN_HEX_K_XOR_APPEND_M).value)
     getElem(AWS_SIGN_KOPAD_SHA256_KIPAD).value = getElem(AWS_SIGN_HEX_K_XOR_OPAD).value + getElem(AWS_SIGN_HEX_M_SHA256).value
     getElem(AWS_SIGN_HMAC).value = sha256(getElem(AWS_SIGN_KOPAD_SHA256_KIPAD).value)
+    getElem(AWS_SIGN_HEX_SIGN).value = ascii_to_hexa(getElem(AWS_SIGN_HMAC).value)
 }
 
 // function textTohex_(str){

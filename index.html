@@ -265,21 +265,9 @@ https://www.npmjs.com/package/aes-js
                     </textarea>
                 </td>
             </tr>
-
-            <tr><td>
-HMAC Value
-            </td>
-        <td>
-<input onchange="hexEncodeSign
-(event)" onfocus="hexEncodeSign
-(event)" oninput="hexEncodeSign
-(event)" onblur="hexEncodeSign
-(event)" size="60">
-        </td>
-        </tr>
         <tr>
-            <td>Signature</td>
-            <td><input disabled id="hmac_sign" size="60"></td>
+            <td>Signature = hexEncode(HMAC(k, m))</td>
+            <td><textarea disabled id="hmac_sign" rows="10"></textarea></td>
         </tr>
         </table>
 
